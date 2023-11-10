@@ -1,0 +1,5 @@
+C:\Users\David\source\repos\SneakersCollectionApi\SneakersCollection.Data\obj\Debug\net6.0\SneakersCollection.Data.csproj.AssemblyReference.cache
+C:\Users\David\source\repos\SneakersCollectionApi\SneakersCollection.Data\obj\Debug\net6.0\SneakersCollection.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\David\source\repos\SneakersCollectionApi\SneakersCollection.Data\obj\Debug\net6.0\SneakersCollection.Data.AssemblyInfoInputs.cache
+C:\Users\David\source\repos\SneakersCollectionApi\SneakersCollection.Data\obj\Debug\net6.0\SneakersCollection.Data.AssemblyInfo.cs
+C:\Users\David\source\repos\SneakersCollectionApi\SneakersCollection.Data\obj\Debug\net6.0\SneakersCollection.Data.csproj.CoreCompileInputs.cache

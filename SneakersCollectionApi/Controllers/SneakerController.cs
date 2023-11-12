@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SneakersCollection.Api.ViewModels;
 using SneakersCollection.Domain.Interfaces.Repositories;
+using SneakersCollection.Domain.Interfaces.Services;
 
 namespace SneakersCollection.Api.Controllers
 {
@@ -10,66 +11,66 @@ namespace SneakersCollection.Api.Controllers
     [ApiController]
     public class SneakerController : ControllerBase
     {
-        private readonly ISneakerRepository _repository;
+        private readonly ISneakerService _sneakerService;
         private readonly IMapper _mapper;
 
-        public SneakerController(ISneakerRepository repository, IMapper mapper)
+        public SneakerController(ISneakerService sneakerService, IMapper mapper)
         {
-            _repository = repository;
+            _sneakerService = sneakerService;
             _mapper = mapper;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<SneakerViewModel>> GetAllSneakers()
         {
-            var sneakers = _repository.GetAll();
+            var sneakers = _sneakerService.GetAllSneakers();
             var sneakersViewModel = _mapper.Map<IEnumerable<SneakerViewModel>>(sneakers);
             return Ok(sneakersViewModel);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<SneakerViewModel> GetSneakerById(int id)
+        public ActionResult<SneakerViewModel> GetSneakerById(Guid id)
         {
-            var sneaker = _repository.GetById(id);
+            var sneaker = _sneakerService.GetSneakerById(id);
             if (sneaker == null)
             {
-                return NotFound(); // Return 404 if not found
+                return NotFound();
             }
             var sneakerViewModel = _mapper.Map<SneakerViewModel>(sneaker);
             return Ok(sneakerViewModel);
         }
 
         [HttpPost]
-        public ActionResult<SneakerViewModel> CreateSneaker([FromBody] SneakerViewModel sneakerViewModel)
+        public async Task<ActionResult<SneakerViewModel>> CreateSneaker([FromBody] SneakerViewModel sneakerViewModel)
         {
             var sneaker = _mapper.Map<Domain.Entities.Sneaker>(sneakerViewModel);
-            var createdSneaker = _repository.Create(sneaker);
+            var createdSneaker = await _sneakerService.AddSneaker(sneaker);
             var createdSneakerViewModel = _mapper.Map<SneakerViewModel>(createdSneaker);
             return CreatedAtAction("GetSneakerById", new { id = createdSneakerViewModel.Id }, createdSneakerViewModel);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateSneaker(int id, [FromBody] SneakerViewModel sneakerViewModel)
+        public async Task<IActionResult> UpdateSneaker(Guid id, [FromBody] SneakerViewModel sneakerViewModel)
         {
-            var existingSneaker = _repository.GetById(id);
+            var existingSneaker = await _sneakerService.GetSneakerById(id);
             if (existingSneaker == null)
             {
-                return NotFound(); // Return 404 if not found
+                return NotFound();
             }
-            _mapper.Map(sneakerViewModel, existingSneaker);
-            _repository.Update(existingSneaker);
+            var sneakerToBeUpdated = _mapper.Map(sneakerViewModel, existingSneaker);
+            _sneakerService.UpdateSneaker(sneakerToBeUpdated);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteSneaker(int id)
+        public async Task<IActionResult> DeleteSneaker(Guid id)
         {
-            var existingSneaker = _repository.GetById(id);
+            var existingSneaker = await _sneakerService.GetSneakerById(id);
             if (existingSneaker == null)
             {
-                return NotFound(); // Return 404 if not found
+                return NotFound();
             }
-            _repository.Delete(id);
+            _sneakerService.RemoveSneaker(id, existingSneaker.BrandId);
             return NoContent();
         }
     }

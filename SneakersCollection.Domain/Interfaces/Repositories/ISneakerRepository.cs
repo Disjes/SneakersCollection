@@ -9,19 +9,10 @@ namespace SneakersCollection.Domain.Interfaces.Repositories
 {
     public interface ISneakerRepository
     {
-        // Create a new sneaker.
-        Sneaker Create(Sneaker sneaker);
-
-        // Retrieve a sneaker by its unique ID.
-        Sneaker GetById(int id);
-
-        // Retrieve a list of all sneakers.
-        IEnumerable<Sneaker> GetAll();
-
-        // Update an existing sneaker.
-        Sneaker Update(Sneaker sneaker);
-
-        // Delete a sneaker by its unique ID.
+        Task<Sneaker> Create(Sneaker sneaker);
+        Task<Sneaker> GetById(Guid id);
+        Task<IEnumerable<Sneaker>> GetAll();
+        Task<Sneaker> Update(Sneaker sneaker);
         void Delete(int id);
     }
 }

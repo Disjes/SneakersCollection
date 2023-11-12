@@ -1,0 +1,15 @@
+C:\Users\David\source\repos\SneakersCollectionApi\SneakersCollection.Application\obj\Debug\net6.0\SneakersCollection.Application.csproj.AssemblyReference.cache
+C:\Users\David\source\repos\SneakersCollectionApi\SneakersCollection.Application\obj\Debug\net6.0\SneakersCollection.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\David\source\repos\SneakersCollectionApi\SneakersCollection.Application\obj\Debug\net6.0\SneakersCollection.Application.AssemblyInfoInputs.cache
+C:\Users\David\source\repos\SneakersCollectionApi\SneakersCollection.Application\obj\Debug\net6.0\SneakersCollection.Application.AssemblyInfo.cs
+C:\Users\David\source\repos\SneakersCollectionApi\SneakersCollection.Application\obj\Debug\net6.0\SneakersCollection.Application.csproj.CoreCompileInputs.cache
+C:\Users\David\source\repos\SneakersCollectionApi\SneakersCollection.Application\bin\Debug\net6.0\SneakersCollection.Application.deps.json
+C:\Users\David\source\repos\SneakersCollectionApi\SneakersCollection.Application\bin\Debug\net6.0\SneakersCollection.Application.dll
+C:\Users\David\source\repos\SneakersCollectionApi\SneakersCollection.Application\bin\Debug\net6.0\SneakersCollection.Application.pdb
+C:\Users\David\source\repos\SneakersCollectionApi\SneakersCollection.Application\bin\Debug\net6.0\SneakersCollection.Domain.dll
+C:\Users\David\source\repos\SneakersCollectionApi\SneakersCollection.Application\bin\Debug\net6.0\SneakersCollection.Domain.pdb
+C:\Users\David\source\repos\SneakersCollectionApi\SneakersCollection.Application\obj\Debug\net6.0\SneakersCollection.Application.csproj.CopyComplete
+C:\Users\David\source\repos\SneakersCollectionApi\SneakersCollection.Application\obj\Debug\net6.0\SneakersCollection.Application.dll
+C:\Users\David\source\repos\SneakersCollectionApi\SneakersCollection.Application\obj\Debug\net6.0\refint\SneakersCollection.Application.dll
+C:\Users\David\source\repos\SneakersCollectionApi\SneakersCollection.Application\obj\Debug\net6.0\SneakersCollection.Application.pdb
+C:\Users\David\source\repos\SneakersCollectionApi\SneakersCollection.Application\obj\Debug\net6.0\ref\SneakersCollection.Application.dll

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SneakersCollection.Data.Contexts;
-using SneakersCollection.Domain.Interfaces.Repositories; 
+using SneakersCollection.Domain.Entities;
+using SneakersCollection.Domain.Interfaces.Repositories;
 using DomainEntities = SneakersCollection.Domain.Entities;
 
 namespace SneakersCollection.Data.Repositories
@@ -16,32 +17,33 @@ namespace SneakersCollection.Data.Repositories
             _mapper = mapper;
         }
 
-        public DomainEntities.Sneaker Create(DomainEntities.Sneaker sneaker)
+        public async Task<Sneaker> Create(Sneaker sneaker)
         {
-            var dataSneaker = _mapper.Map<Sneaker>(sneaker);
+            var dataSneaker = _mapper.Map<Entities.Sneaker>(sneaker);
             _context.Sneakers.Add(dataSneaker);
             _context.SaveChanges();
-            return _mapper.Map<DomainEntities.Sneaker>(dataSneaker); ;
+            var createdSneaker = _mapper.Map<Sneaker>(dataSneaker);
+            return createdSneaker;
         }
 
-        public DomainEntities.Sneaker GetById(int id)
+        public async Task<Sneaker> GetById(Guid id)
         {
             var dataSneaker = _context.Sneakers.Find(id);
-            return _mapper.Map<DomainEntities.Sneaker>(dataSneaker);
+            return _mapper.Map<Sneaker>(dataSneaker);
         }
 
-        public IEnumerable<DomainEntities.Sneaker> GetAll()
+        public async Task<IEnumerable<Sneaker>> GetAll()
         {
             var dataSneakers = _context.Sneakers.ToList();
-            return _mapper.Map<IEnumerable<DomainEntities.Sneaker>>(dataSneakers);
+            return _mapper.Map<IEnumerable<Sneaker>>(dataSneakers);
         }
 
-        public DomainEntities.Sneaker Update(DomainEntities.Sneaker sneaker)
+        public async Task<Sneaker> Update(Sneaker sneaker)
         {
-            var dataSneaker = _mapper.Map<Sneaker>(sneaker);
+            var dataSneaker = _mapper.Map<Entities.Sneaker>(sneaker);
             _context.Sneakers.Update(dataSneaker);
-            _context.SaveChanges();
-            return _mapper.Map<DomainEntities.Sneaker>(dataSneaker);
+            await _context.SaveChangesAsync();
+            return _mapper.Map<Sneaker>(dataSneaker);
         }
 
         public void Delete(int id)

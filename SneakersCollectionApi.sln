@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SneakersCollection.Domain",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SneakersCollection.Data", "SneakersCollection.Data\SneakersCollection.Data.csproj", "{CCBC4400-8C7C-4284-94AB-6BED55C14935}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SneakersCollection.Tests", "SneakersCollection.Tests\SneakersCollection.Tests.csproj", "{250848FA-7837-4EEE-9977-06B693C4E1F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SneakersCollection.Application", "SneakersCollection.Application\SneakersCollection.Application.csproj", "{1890431A-9882-408D-B432-0F212AA6E5A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{CCBC4400-8C7C-4284-94AB-6BED55C14935}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCBC4400-8C7C-4284-94AB-6BED55C14935}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CCBC4400-8C7C-4284-94AB-6BED55C14935}.Release|Any CPU.Build.0 = Release|Any CPU
+		{250848FA-7837-4EEE-9977-06B693C4E1F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{250848FA-7837-4EEE-9977-06B693C4E1F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{250848FA-7837-4EEE-9977-06B693C4E1F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{250848FA-7837-4EEE-9977-06B693C4E1F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1890431A-9882-408D-B432-0F212AA6E5A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1890431A-9882-408D-B432-0F212AA6E5A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1890431A-9882-408D-B432-0F212AA6E5A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1890431A-9882-408D-B432-0F212AA6E5A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

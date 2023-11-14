@@ -1,8 +1,3 @@
-## Configuration File
-
-Copy the following configuration and replace the placeholder values with your local settings:
-
-```json
 {
   "Swagger": {
     "ApiTitle": "Sneakers Collection API",
@@ -107,5 +102,3 @@ Currently, there are challenges with the authentication process in Swagger. Howe
 
 ```bash
 curl -H "Content-Type: application/x-www-form-urlencoded" -d "client_id=m2m.client&scope=sneakerapi.read&client_secret=82124972-4616-4d29-9c16-ccd29bc5d157&grant_type=client_credentials" "https://localhost:<Port>/connect/token"
-
-

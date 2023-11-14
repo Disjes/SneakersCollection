@@ -28,7 +28,8 @@ Copy the following configuration and replace the placeholder values with your lo
     }
   },
   "AllowedHosts": "*"
-}```
+}
+```
 
 Please note that the Identity Server Project has Test Users Setup, the m2m user has a RedirectUrl set, this one is hardcoded for now so we need to modify it before testing authentication:
 
@@ -48,6 +49,7 @@ new Client
         "https://localhost:44347"
     }
 }
+```
 
 ## Features
 

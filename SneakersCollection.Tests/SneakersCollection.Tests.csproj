@@ -30,4 +30,9 @@
     <ProjectReference Include="..\SneakersCollectionApi\SneakersCollection.Api.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Unit\Data\" />
+    <Folder Include="Unit\Domain\" />
+  </ItemGroup>
+
 </Project>

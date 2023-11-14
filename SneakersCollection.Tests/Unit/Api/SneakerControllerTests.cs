@@ -1,4 +1,5 @@
 ﻿using AutoBogus;
+using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -15,30 +16,41 @@ using System.Threading.Tasks;
 
 namespace SneakersCollection.Tests.Unit.Api
 {
-    public class SneakerControllerTests
+    public class SneakerControllerTests : IClassFixture<TestFixture>
     {
-        [Fact]
-        public void GetSneakerById_WithValidId_ShouldReturnSneaker()
+        private readonly TestFixture _fixture;
+
+        public SneakerControllerTests(TestFixture fixture)
         {
-            // Arrange
-            var sneakerData = AutoFaker.Generate<SneakersCollection.Domain.Entities.Sneaker>();
-
-            var mockService = new Mock<ISneakerService>();
-            mockService.Setup(service => service.GetSneakerById(It.IsAny<Guid>())).Returns(Task.FromResult(sneakerData));
-
-            var controller = new SneakerController(mockService.Object, null);
-            var validId = sneakerData.Id;
-
-            // Act
-            var result = controller.GetSneakerById(validId);
-
-            // Assert
-            result.Should().BeOfType<OkObjectResult>();
-            result.Value.Should().BeEquivalentTo(sneakerData);
+            _fixture = fixture;
         }
 
         [Fact]
-        public void GetSneakerById_WithInvalidId_ShouldReturnNotFound()
+        public async void GetSneakerById_WithValidId_ShouldReturnSneaker()
+        {
+            // Arrange
+            var sneaker = new AutoFaker<Sneaker>()
+                .RuleFor(fake => fake.SizeUS, fake => fake.Random.Decimal(5, 13))
+                .Generate();
+            var domainSneaker = _fixture.Mapper.Map<Domain.Entities.Sneaker>(sneaker);
+            var sneakerViewModel = _fixture.Mapper.Map<SneakerViewModel>(domainSneaker);
+
+            var mockService = new Mock<ISneakerService>();
+            mockService.Setup(service => service.GetSneakerById(It.IsAny<Guid>())).Returns(Task.FromResult(domainSneaker));
+
+            var controller = new SneakerController(mockService.Object, _fixture.Mapper);
+            var validId = domainSneaker.Id;
+
+            // Act
+            var result = await controller.GetSneakerById(validId);
+
+            // Assert
+            result.Result.Should().BeOfType<OkObjectResult>();
+            (result.Result as CreatedAtActionResult).Value.Should().BeEquivalentTo(domainSneaker);
+        }
+
+        [Fact]
+        public async void GetSneakerById_WithInvalidId_ShouldReturnNotFound()
         {
             // Arrange
             var mockService = new Mock<ISneakerService>();
@@ -49,106 +61,118 @@ namespace SneakersCollection.Tests.Unit.Api
             var invalidId = Guid.NewGuid();
 
             // Act
-            var result = controller.GetSneakerById(invalidId);
+            var result = await controller.GetSneakerById(invalidId);
 
             // Assert
-            result.Should().BeOfType<NotFoundResult>();
+            result.Result.Should().BeOfType<NotFoundResult>();
         }
 
         [Fact]
         public async void CreateSneaker_WithValidData_ShouldReturnCreatedSneaker()
         {
             // Arrange
-            var sneakerData = AutoFaker.Generate<SneakerViewModel>();
-            var createdSneaker = AutoFaker.Generate<SneakersCollection.Domain.Entities.Sneaker>();
+            var createdSneaker = new AutoFaker<Sneaker>()
+                .RuleFor(fake => fake.SizeUS, fake => fake.Random.Decimal(5, 13))
+                .Generate();
+            var createdDomainSneaker = _fixture.Mapper.Map<Domain.Entities.Sneaker>(createdSneaker);
+            var sneakerViewModel = _fixture.Mapper.Map<SneakerViewModel>(createdDomainSneaker);
 
             var mockService = new Mock<ISneakerService>();
             mockService.Setup(service => service.AddSneaker(It.IsAny<SneakersCollection.Domain.Entities.Sneaker>()))
-                .Returns(Task.FromResult<SneakersCollection.Domain.Entities.Sneaker>(createdSneaker));
+                .Returns(Task.FromResult<SneakersCollection.Domain.Entities.Sneaker>(createdDomainSneaker));
 
-            var controller = new SneakerController(mockService.Object, null);
+            var controller = new SneakerController(mockService.Object, _fixture.Mapper);
 
             // Act
-            var result = await controller.CreateSneaker(sneakerData);
+            var result = await controller.CreateSneaker(sneakerViewModel);
 
             // Assert
-            result.Should().BeOfType<CreatedAtActionResult>();
-            result.Value.Should().BeEquivalentTo(createdSneaker);
+            result.Result.Should().BeOfType<CreatedAtActionResult>();
+            (result.Result as CreatedAtActionResult).Value.Should().BeEquivalentTo(sneakerViewModel);
         }
 
         [Fact]
-        public void UpdateSneaker_WithValidData_ShouldReturnNoContent()
+        public async void UpdateSneaker_WithValidData_ShouldReturnNoContent()
         {
             // Arrange
-            var sneakerData = AutoFaker.Generate<SneakersCollection.Domain.Entities.Sneaker>();
-            var updatedSneaker = AutoFaker.Generate<SneakersCollection.Domain.Entities.Sneaker>();
-            var mockSneakerParam = AutoFaker.Generate<SneakerViewModel>();
+            var updatedSneaker = new AutoFaker<Sneaker>()
+                .RuleFor(fake => fake.SizeUS, fake => fake.Random.Decimal(5, 13))
+                .Generate();
+            var domainSneaker = _fixture.Mapper.Map<Domain.Entities.Sneaker>(updatedSneaker);
+            var sneakerViewModel = _fixture.Mapper.Map<SneakerViewModel>(domainSneaker);
 
             var mockService = new Mock<ISneakerService>();
             mockService.Setup(service => service.GetSneakerById(It.IsAny<Guid>()))
-                .Returns(Task.FromResult(sneakerData));
+                .Returns(Task.FromResult(domainSneaker));
 
-            var controller = new SneakerController(mockService.Object, null);
+            var controller = new SneakerController(mockService.Object, _fixture.Mapper);
 
             // Act
-            var result = controller.UpdateSneaker(sneakerData.Id, mockSneakerParam);
+            var result = await controller.UpdateSneaker(domainSneaker.Id, sneakerViewModel);
 
             // Assert
-            mockService.Verify(service => service.UpdateSneaker(updatedSneaker), Times.Once);
+            mockService.Verify(service => service.UpdateSneaker(domainSneaker), Times.Once);
             result.Should().BeOfType<NoContentResult>();
         }
 
         [Fact]
-        public void UpdateSneaker_WithInvalidId_ShouldReturnNotFound()
+        public async void UpdateSneaker_WithInvalidId_ShouldReturnNotFound()
         {
             // Arrange
-            var updatedSneaker = AutoFaker.Generate<SneakerViewModel>();
+            var updatedSneaker = new AutoFaker<Sneaker>()
+                .RuleFor(fake => fake.SizeUS, fake => fake.Random.Decimal(5, 13))
+                .Generate();
+            var domainSneaker = _fixture.Mapper.Map<Domain.Entities.Sneaker>(updatedSneaker);
+            var sneakerViewModel = _fixture.Mapper.Map<SneakerViewModel>(domainSneaker);
 
             var mockService = new Mock<ISneakerService>();
             mockService.Setup(service => service.GetSneakerById(It.IsAny<Guid>()))
                 .Returns(Task.FromResult<SneakersCollection.Domain.Entities.Sneaker>(null));
 
-            var controller = new SneakerController(mockService.Object, null);
+            var controller = new SneakerController(mockService.Object, _fixture.Mapper);
 
 
             // Act
-            var result = controller.UpdateSneaker(updatedSneaker.Id, updatedSneaker);
+            var result = await controller.UpdateSneaker(updatedSneaker.Id, sneakerViewModel);
 
             // Assert
             result.Should().BeOfType<NotFoundResult>();
         }
 
         [Fact]
-        public void DeleteSneaker_WithValidId_ShouldReturnNoContent()
+        public async void DeleteSneaker_WithValidId_ShouldReturnNoContent()
         {
             // Arrange
-            var sneakerData = AutoFaker.Generate<SneakersCollection.Domain.Entities.Sneaker>();
+            var sneakerData = new AutoFaker<Sneaker>()
+                .RuleFor(fake => fake.SizeUS, fake => fake.Random.Decimal(5, 13))
+                .Generate();
+            var domainSneaker = _fixture.Mapper.Map<Domain.Entities.Sneaker>(sneakerData);
 
             var mockService = new Mock<ISneakerService>();
             mockService.Setup(service => service.GetSneakerById(It.IsAny<Guid>()))
-                .Returns(Task.FromResult(sneakerData));
+                .Returns(Task.FromResult(domainSneaker));
 
-            var controller = new SneakerController(mockService.Object, null);
+            var controller = new SneakerController(mockService.Object, _fixture.Mapper);
 
             // Act
-            var result = controller.DeleteSneaker(sneakerData.Id);
+            var result = await controller.DeleteSneaker(sneakerData.Id);
 
             // Assert
             result.Should().BeOfType<NoContentResult>();
         }
 
         [Fact]
-        public void DeleteSneaker_WithInvalidId_ShouldReturnNotFound()
+        public async void DeleteSneaker_WithInvalidId_ShouldReturnNotFound()
         {
             // Arrange
             var mockService = new Mock<ISneakerService>();
             mockService.Setup(service => service.GetSneakerById(It.IsAny<Guid>()))
                 .Returns(Task.FromResult<SneakersCollection.Domain.Entities.Sneaker>(null));
 
-            var controller = new SneakerController(mockService.Object, null);
+            var controller = new SneakerController(mockService.Object, _fixture.Mapper);
 
             // Act
-            var result = controller.DeleteSneaker(Guid.Empty);
+            var result = await controller.DeleteSneaker(Guid.Empty);
 
             // Assert
             result.Should().BeOfType<NotFoundResult>();

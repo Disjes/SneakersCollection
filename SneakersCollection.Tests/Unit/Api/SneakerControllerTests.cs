@@ -46,7 +46,7 @@ namespace SneakersCollection.Tests.Unit.Api
 
             // Assert
             result.Result.Should().BeOfType<OkObjectResult>();
-            (result.Result as CreatedAtActionResult).Value.Should().BeEquivalentTo(domainSneaker);
+            (result.Result as OkObjectResult).Value.Should().BeEquivalentTo(sneakerViewModel);
         }
 
         [Fact]

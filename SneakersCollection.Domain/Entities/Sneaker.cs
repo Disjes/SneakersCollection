@@ -16,6 +16,9 @@ namespace SneakersCollection.Domain.Entities
         public Size SizeUS { get; private set; }
         public int Year { get; private set; }
 
+        public Sneaker()
+        { }
+
         public Sneaker(string name, Guid brandId, Money price, Size sizeUS, int year)
         {
             Name = name;

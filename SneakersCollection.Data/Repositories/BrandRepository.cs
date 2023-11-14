@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using SneakersCollection.Data.Contexts;
 using SneakersCollection.Domain.Entities;
+using SneakersCollection.Domain.Interfaces.Repositories;
 
 namespace SneakersCollection.Data.Repositories
 {
-    public class BrandRepository
+    public class BrandRepository : IBrandRepository
     {
         private readonly SneakersCollectionContext dbContext;
         private readonly IMapper _mapper;
@@ -25,7 +27,9 @@ namespace SneakersCollection.Data.Repositories
 
         public async Task<Brand> GetById(Guid id)
         {
-            var brand = await dbContext.Brands.FindAsync(id);
+            var brand = dbContext.Brands
+            .Include(s => s.Sneakers) 
+            .FirstOrDefault(s => s.Id == id);
             var domainBrand = _mapper.Map<Brand>(brand);
             return domainBrand;
         }

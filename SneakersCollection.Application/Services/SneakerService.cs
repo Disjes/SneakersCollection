@@ -1,4 +1,6 @@
-﻿using SneakersCollection.Domain.Entities;
+﻿using Microsoft.Extensions.Logging;
+using SneakersCollection.Domain.Entities;
+using SneakersCollection.Domain.Exceptions;
 using SneakersCollection.Domain.Interfaces.Repositories;
 using SneakersCollection.Domain.Interfaces.Services;
 using SneakersCollection.Domain.ValueObjects;
@@ -31,7 +33,15 @@ namespace SneakersCollection.Application.Services
                 throw new ApplicationException("Brand not found.");
             }
 
-            brand.AddSneaker(sneaker.BrandId, sneaker.Name, sneaker.Price, sneaker.SizeUS, sneaker.Year);
+            try
+            {
+                brand.AddSneaker(sneaker.BrandId, sneaker.Name, sneaker.Price, sneaker.SizeUS, sneaker.Year);
+            
+            }
+            catch (InvalidSneakerSizeException ex)
+            {
+                throw;
+            }
 
             var createdSneaker = await sneakerRepository.Create(sneaker);
 

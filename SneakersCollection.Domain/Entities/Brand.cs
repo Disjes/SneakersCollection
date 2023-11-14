@@ -1,4 +1,5 @@
-﻿using SneakersCollection.Domain.ValueObjects;
+﻿using SneakersCollection.Domain.Exceptions;
+using SneakersCollection.Domain.ValueObjects;
 
 namespace SneakersCollection.Domain.Entities
 {
@@ -21,7 +22,7 @@ namespace SneakersCollection.Domain.Entities
         {
             if (!IsSizeWithinRange(sizeUS))
             {
-                throw new ApplicationException("The size is outside the allowed range for this brand.");
+                throw new InvalidSneakerSizeException(sizeUS.NumericSize);
             }
 
             var sneaker = new Sneaker(name, brandId, price, sizeUS, year);

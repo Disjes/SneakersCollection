@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SneakersCollection.Api.ViewModels;
+using SneakersCollection.Domain.Exceptions;
 using SneakersCollection.Domain.Interfaces.Repositories;
 using SneakersCollection.Domain.Interfaces.Services;
 
@@ -9,6 +11,7 @@ namespace SneakersCollection.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize]
     public class SneakerController : ControllerBase
     {
         private readonly ISneakerService _sneakerService;
@@ -21,17 +24,17 @@ namespace SneakersCollection.Api.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<SneakerViewModel>> GetAllSneakers()
+        public async Task<ActionResult<IEnumerable<SneakerViewModel>>> GetAllSneakers()
         {
-            var sneakers = _sneakerService.GetAllSneakers();
+            var sneakers = await _sneakerService.GetAllSneakers();
             var sneakersViewModel = _mapper.Map<IEnumerable<SneakerViewModel>>(sneakers);
             return Ok(sneakersViewModel);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<SneakerViewModel> GetSneakerById(Guid id)
+        public async Task<ActionResult<SneakerViewModel>> GetSneakerById(Guid id)
         {
-            var sneaker = _sneakerService.GetSneakerById(id);
+            var sneaker = await _sneakerService.GetSneakerById(id);
             if (sneaker == null)
             {
                 return NotFound();
@@ -43,8 +46,16 @@ namespace SneakersCollection.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<SneakerViewModel>> CreateSneaker([FromBody] SneakerViewModel sneakerViewModel)
         {
+            var createdSneaker = new Domain.Entities.Sneaker();
             var sneaker = _mapper.Map<Domain.Entities.Sneaker>(sneakerViewModel);
-            var createdSneaker = await _sneakerService.AddSneaker(sneaker);
+            try
+            {
+                createdSneaker = await _sneakerService.AddSneaker(sneaker);
+            }
+            catch (InvalidSneakerSizeException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             var createdSneakerViewModel = _mapper.Map<SneakerViewModel>(createdSneaker);
             return CreatedAtAction("GetSneakerById", new { id = createdSneakerViewModel.Id }, createdSneakerViewModel);
         }
@@ -70,7 +81,7 @@ namespace SneakersCollection.Api.Controllers
             {
                 return NotFound();
             }
-            _sneakerService.RemoveSneaker(id, existingSneaker.BrandId);
+            _sneakerService.RemoveSneaker(existingSneaker.BrandId, id);
             return NoContent();
         }
     }

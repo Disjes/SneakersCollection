@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using SneakersCollection.Data.Contexts;
 using SneakersCollection.Domain.Entities;
 using SneakersCollection.Domain.Interfaces.Repositories;
@@ -21,21 +22,21 @@ namespace SneakersCollection.Data.Repositories
         {
             var dataSneaker = _mapper.Map<Entities.Sneaker>(sneaker);
             _context.Sneakers.Add(dataSneaker);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             var createdSneaker = _mapper.Map<Sneaker>(dataSneaker);
             return createdSneaker;
         }
 
         public async Task<Sneaker> GetById(Guid id)
         {
-            var dataSneaker = _context.Sneakers.Find(id);
+            var dataSneaker = _context.Sneakers.AsNoTracking().FirstOrDefault(s => s.Id == id);
             return _mapper.Map<Sneaker>(dataSneaker);
         }
 
         public async Task<IEnumerable<Sneaker>> GetAll()
         {
-            var dataSneakers = _context.Sneakers.ToList();
-            return _mapper.Map<IEnumerable<Sneaker>>(dataSneakers);
+            var sneakers = _context.Sneakers.ToList();
+            return _mapper.Map<IEnumerable<Sneaker>>(sneakers);
         }
 
         public async Task<Sneaker> Update(Sneaker sneaker)
